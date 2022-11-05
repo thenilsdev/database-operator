@@ -1,0 +1,5 @@
+domain: nils.gg
+layout:
+- quarkus.javaoperatorsdk.io/v1-alpha
+projectName: database-operator
+version: "3"
