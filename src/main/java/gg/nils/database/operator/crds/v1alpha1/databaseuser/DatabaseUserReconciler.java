@@ -11,6 +11,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 
 import javax.inject.Inject;
+import java.util.Base64;
 import java.util.UUID;
 
 import static io.javaoperatorsdk.operator.api.reconciler.Constants.WATCH_ALL_NAMESPACES;
@@ -37,8 +38,8 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
                 .withName(secretName)
                 .get();
 
-        if (existingSecret != null && existingSecret.getStringData().containsKey("password")) {
-            password = existingSecret.getStringData().get("password");
+        if (existingSecret != null && existingSecret.getData() != null && existingSecret.getData().containsKey("password")) {
+            password = new String(Base64.getDecoder().decode(existingSecret.getData().get("password")));
         } else {
             password = UUID.randomUUID().toString().replaceAll("-", "");
         }
