@@ -1,0 +1,10 @@
+apiVersion: k8s.nils.gg/v1alpha1
+kind: DatabaseUser
+metadata:
+  name: iwcrates
+  namespace: staging
+spec:
+  connection:
+    type: "mongodb"
+    uri: "mongodb://127.0.0.1:27017"
+  name: "iwcrates"
