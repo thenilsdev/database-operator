@@ -1,4 +1,4 @@
-apiVersion: k8s.nils.gg/v1alpha1
+apiVersion: db.nils.gg/v1alpha1
 kind: DatabaseUser
 metadata:
   name: test
