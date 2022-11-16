@@ -1,17 +1,17 @@
-package gg.nils.database.operator.api.impl;
+package gg.nils.database.operator.impl.database;
 
-import gg.nils.database.operator.api.DatabaseUserManager;
+import gg.nils.database.operator.api.database.DatabaseInstance;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class MySQLDatabaseUserManager implements DatabaseUserManager {
+public class MySQLDatabaseInstance implements DatabaseInstance {
 
     private final Connection connection;
 
-    public MySQLDatabaseUserManager(Connection connection) {
+    public MySQLDatabaseInstance(Connection connection) {
         this.connection = connection;
     }
 

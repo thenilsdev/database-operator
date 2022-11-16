@@ -1,9 +1,13 @@
 package gg.nils.database.operator.crds.v1alpha1.databaseuser;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class DatabaseUserStatus {
 
-    boolean status;
+    private boolean status;
+
+    private String message;
 }

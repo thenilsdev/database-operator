@@ -1,7 +1,8 @@
 package gg.nils.database.operator.crds.v1alpha1.databaseuser;
 
-import gg.nils.database.operator.api.DatabaseUserManager;
-import gg.nils.database.operator.api.DatabaseUserManagerFactory;
+import gg.nils.database.operator.api.DatabaseApi;
+import gg.nils.database.operator.crds.v1alpha1.databaseinstance.DatabaseInstance;
+import gg.nils.database.operator.crds.v1alpha1.databaseinstance.DatabaseInstanceSpec;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.SecretBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -13,6 +14,7 @@ import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import javax.inject.Inject;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static io.javaoperatorsdk.operator.api.reconciler.Constants.WATCH_ALL_NAMESPACES;
 
@@ -22,16 +24,39 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
     @Inject
     KubernetesClient client;
 
+    @Inject
+    DatabaseApi databaseApi;
+
     @Override
     public UpdateControl<DatabaseUser> reconcile(DatabaseUser resource, Context<DatabaseUser> context) throws Exception {
         DatabaseUserSpec spec = resource.getSpec();
 
+        String databaseInstanceName = spec.getDatabaseInstance();
+
+        DatabaseInstance databaseInstance = this.client.resources(DatabaseInstance.class)
+                .inNamespace(resource.getMetadata().getNamespace())
+                .withName(databaseInstanceName)
+                .get();
+
+        if (databaseInstance == null) {
+            resource.setStatus(DatabaseUserStatus.builder()
+                    .status(false)
+                    .message("Database instance " + databaseInstanceName + " not found!")
+                    .build());
+
+            return UpdateControl.updateStatus(resource).rescheduleAfter(30, TimeUnit.SECONDS);
+        }
+
+        DatabaseInstanceSpec databaseInstanceSpec = databaseInstance.getSpec();
+
+        String type = databaseInstanceSpec.getType();
+        String uri = databaseInstanceSpec.getUri();
         String database = spec.getName();
         String username = spec.getName();
         String password;
 
-        //String secretName = spec.getConnection().getType() + "-" + database + "-" + username;
-        String secretName = resource.getMetadata().getName() + "-credentials";
+        // mongodb-iwcrates-credentials
+        String secretName = databaseInstanceName + "-" + resource.getMetadata().getName() + "-credentials";
 
         Secret existingSecret = this.client.secrets()
                 .inNamespace(resource.getMetadata().getNamespace())
@@ -44,8 +69,9 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
             password = UUID.randomUUID().toString().replaceAll("-", "");
         }
 
-        DatabaseUserManager databaseUserManager = DatabaseUserManagerFactory.get(resource);
-        databaseUserManager.createOrUpdate(username, database, password);
+        gg.nils.database.operator.api.database.DatabaseInstance instance = this.databaseApi.getDatabaseInstance(type, uri);
+        instance.createOrUpdate(database, username, password);
+        instance.close();
 
         Secret secret = new SecretBuilder()
                 .editOrNewMetadata()
@@ -60,6 +86,10 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
                 .inNamespace(secret.getMetadata().getNamespace())
                 .createOrReplace(secret);
 
-        return UpdateControl.noUpdate();
+        resource.setStatus(DatabaseUserStatus.builder()
+                .status(true)
+                .build());
+
+        return UpdateControl.updateStatus(resource);
     }
 }
