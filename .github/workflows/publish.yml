@@ -85,7 +85,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Build with Maven
-        run: mvn -B package -DskipTests=true -D"quarkus.container-image.group=${{ github.repository_owner }}" -D"quarkus.container-image.name=${{ env.IMAGE_NAME }}" -D"quarkus.container-image.registry=ghcr.io" -D"quarkus.container-image.tag=${{ steps.docker_tags.outputs.version }}" -D"quarkus.container-image.additional-tags=${{ steps.docker_tags.outputs.tags }}" -D"quarkus.container-image.build=true" -D"quarkus.container-image.push=true" -D"quarkus.container-image.builder=jib"
+        run: mvn -B package -DskipTests=true -Dquarkus.container-image.group=${{ github.repository_owner }} -Dquarkus.container-image.name=${{ env.IMAGE_NAME }} -Dquarkus.container-image.registry=ghcr.io -Dquarkus.container-image.tag=${{ steps.docker_tags.outputs.version }} -Dquarkus.container-image.additional-tags=${{ steps.docker_tags.outputs.tags }} -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.builder=jib
         # run: >
         #   mvn -B package -DskipTests=true \
         #   -D"quarkus.container-image.group=${{ github.repository_owner }}" \
