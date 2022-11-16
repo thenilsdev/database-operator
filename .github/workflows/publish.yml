@@ -85,7 +85,15 @@ jobs:
           password: ${{ github.token }}
 
       - name: Build with Maven
-        run: mvn -B compile -DskipTests=true jib:build -Djib.to.image=${{ format('ghcr.io/{0}/{1}:{2}', github.repository_owner, env.IMAGE_NAME, steps.meta.outputs.version) }} -Djib.to.tags=${{ steps.docker_tags.outputs.tags }}
+        run: mvn -B -DskipTests=true package \
+          -Dquarkus.container-image.group=${{ github.repository_owner }} \
+          -Dquarkus.container-image.name=${{ env.IMAGE_NAME }} \
+          -Dquarkus.container-image.registry=ghcr.io \
+          -Dquarkus.container-image.tag=${{ steps.docker_tags.outputs.version }} \
+          -Dquarkus.container-image.additional-tags=${{ steps.docker_tags.outputs.tags }} \
+          -Dquarkus.container-image.build=true \
+          -Dquarkus.container-image.push=true \
+          -Dquarkus.container-image.builder=jib
 
       # release if main branch and release needed
       - name: Create Release

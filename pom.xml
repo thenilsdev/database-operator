@@ -86,17 +86,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
             </plugin>
-            <!-- build (and push) docker image -->
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <from>
-                        <image>eclipse-temurin:17-jre</image>
-                    </from>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
