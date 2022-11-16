@@ -1,10 +1,17 @@
-apiVersion: k8s.nils.gg/v1alpha1
+apiVersion: db.nils.gg/v1alpha1
+kind: DatabaseInstance
+metadata:
+  name: mongodb
+  namespace: staging
+spec:
+  type: mongodb
+  uri: mongodb://127.0.0.1:27017
+---
+apiVersion: db.nils.gg/v1alpha1
 kind: DatabaseUser
 metadata:
   name: test
   namespace: staging
 spec:
-  connection:
-    type: "mongodb"
-    uri: "mongodb://127.0.0.1:27017"
-  name: "test"
+  databaseInstance: mongodb
+  name: test

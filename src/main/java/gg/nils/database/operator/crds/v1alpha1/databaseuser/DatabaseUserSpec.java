@@ -5,16 +5,7 @@ import lombok.Data;
 @Data
 public class DatabaseUserSpec {
 
-    private Connection connection;
+    private String databaseInstance;
 
     private String name;
-
-    @Data
-    public static class Connection {
-
-        private String type;
-
-        private String uri;
-
-    }
 }

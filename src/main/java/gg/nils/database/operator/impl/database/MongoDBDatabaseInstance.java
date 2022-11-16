@@ -1,27 +1,27 @@
-package gg.nils.database.operator.api.impl;
+package gg.nils.database.operator.impl.database;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import gg.nils.database.operator.api.DatabaseUserManager;
+import gg.nils.database.operator.api.database.DatabaseInstance;
 import org.bson.Document;
 
 import java.util.Collections;
 import java.util.Set;
 
-public class MongoDBDatabaseUserManager implements DatabaseUserManager {
+public class MongoDBDatabaseInstance implements DatabaseInstance {
 
-    private final MongoClient mongoClient;
+    private final MongoClient client;
 
-    public MongoDBDatabaseUserManager(MongoClient mongoClient) {
-        this.mongoClient = mongoClient;
+    public MongoDBDatabaseInstance(MongoClient client) {
+        this.client = client;
     }
 
     @Override
     public void createOrUpdate(String database, String username, String password) {
-        MongoDatabase adminDatabase = this.mongoClient.getDatabase("admin");
+        MongoDatabase adminDatabase = this.client.getDatabase("admin");
         MongoCollection<Document> userCollection = adminDatabase.getCollection("system.users");
 
         Document user = userCollection.find(Filters.and(
@@ -34,7 +34,7 @@ public class MongoDBDatabaseUserManager implements DatabaseUserManager {
                         .append("db", database)
         );
 
-        MongoDatabase db = this.mongoClient.getDatabase(database);
+        MongoDatabase db = this.client.getDatabase(database);
 
         if (user == null) {
             db.runCommand(new BasicDBObject("createUser", username)
@@ -51,6 +51,6 @@ public class MongoDBDatabaseUserManager implements DatabaseUserManager {
 
     @Override
     public void close() {
-        this.mongoClient.close();
+        this.client.close();
     }
 }

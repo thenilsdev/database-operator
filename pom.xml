@@ -3,11 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>gg.nils</groupId>
     <artifactId>database-operator</artifactId>
     <name>database-operator</name>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <properties>
         <compiler-plugin.version>3.10.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -30,6 +32,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.quarkiverse.operatorsdk</groupId>
@@ -94,5 +97,4 @@
             </properties>
         </profile>
     </profiles>
-
 </project>
