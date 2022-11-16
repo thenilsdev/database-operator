@@ -86,7 +86,7 @@ jobs:
 
       - name: Build with Maven
         run: >
-          mvn -B -DskipTests=true package \
+          mvn -B package -DskipTests=true \
           -Dquarkus.container-image.group=${{ github.repository_owner }} \
           -Dquarkus.container-image.name=${{ env.IMAGE_NAME }} \
           -Dquarkus.container-image.registry=ghcr.io \
