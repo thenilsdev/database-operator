@@ -56,10 +56,15 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
         // mongodb-iwcrates-credentials
         String secretName = databaseInstanceName + "-" + resource.getMetadata().getName() + "-credentials";
 
-        Secret existingSecret = this.client.secrets()
-                .inNamespace(resource.getMetadata().getNamespace())
-                .withName(secretName)
-                .get();
+        Secret existingSecret = null;
+
+        try {
+            existingSecret = this.client.secrets()
+                    .inNamespace(resource.getMetadata().getNamespace())
+                    .withName(secretName)
+                    .get();
+        } catch (Throwable ignored) {
+        }
 
         if (existingSecret != null && existingSecret.getData() != null && existingSecret.getData().containsKey("password")) {
             password = new String(Base64.getDecoder().decode(existingSecret.getData().get("password")));
