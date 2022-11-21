@@ -1,10 +1,12 @@
 package gg.nils.database.operator.crds.v1alpha1.databaseuser;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
+@NoArgsConstructor
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class DatabaseUserStatus {
 
     private boolean status;
