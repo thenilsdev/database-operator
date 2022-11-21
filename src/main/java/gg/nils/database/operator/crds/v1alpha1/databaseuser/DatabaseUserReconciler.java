@@ -49,8 +49,6 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
 
         DatabaseInstanceSpec databaseInstanceSpec = databaseInstance.getSpec();
 
-        String type = databaseInstanceSpec.getType();
-        String uri = databaseInstanceSpec.getUri();
         String database = spec.getName();
         String username = spec.getName();
         String password;
@@ -69,7 +67,7 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
             password = UUID.randomUUID().toString().replaceAll("-", "");
         }
 
-        gg.nils.database.operator.api.database.DatabaseInstance instance = this.databaseApi.getDatabaseInstance(type, uri);
+        gg.nils.database.operator.api.database.DatabaseInstance instance = this.databaseApi.getDatabaseInstance(databaseInstance);
         instance.createOrUpdate(database, username, password);
         instance.close();
 

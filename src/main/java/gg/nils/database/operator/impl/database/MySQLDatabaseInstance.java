@@ -2,10 +2,7 @@ package gg.nils.database.operator.impl.database;
 
 import gg.nils.database.operator.api.database.DatabaseInstance;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MySQLDatabaseInstance implements DatabaseInstance {
 
@@ -59,6 +56,13 @@ public class MySQLDatabaseInstance implements DatabaseInstance {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void ping() throws Exception {
+        Statement statement = this.connection.createStatement();
+        statement.execute("SELECT 1;");
+        statement.close();
     }
 
     private boolean exists(String username) {

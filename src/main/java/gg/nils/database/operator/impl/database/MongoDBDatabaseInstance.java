@@ -6,7 +6,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import gg.nils.database.operator.api.database.DatabaseInstance;
+import org.bson.BsonDocument;
+import org.bson.BsonInt64;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.Collections;
 import java.util.Set;
@@ -52,5 +55,12 @@ public class MongoDBDatabaseInstance implements DatabaseInstance {
     @Override
     public void close() {
         this.client.close();
+    }
+
+    @Override
+    public void ping() throws Exception {
+        MongoDatabase database = this.client.getDatabase("admin");
+        Bson command = new BsonDocument("ping", new BsonInt64(1));
+        database.runCommand(command);
     }
 }
