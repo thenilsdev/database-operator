@@ -5,7 +5,6 @@ import lombok.*;
 @Data
 @Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class DatabaseUserStatus {
 
