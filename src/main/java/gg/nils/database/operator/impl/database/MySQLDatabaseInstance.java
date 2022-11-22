@@ -20,24 +20,20 @@ public class MySQLDatabaseInstance implements DatabaseInstance {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, "%");
                 preparedStatement.setString(3, password);
-                System.out.println(preparedStatement);
                 preparedStatement.execute();
             } else {
                 PreparedStatement preparedStatement = this.connection.prepareStatement("ALTER USER ?@? IDENTIFIED BY ?;");
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, "%");
                 preparedStatement.setString(3, password);
-                System.out.println(preparedStatement);
                 preparedStatement.execute();
             }
 
-            PreparedStatement preparedStatement = this.connection.prepareStatement("GRANT ALL PRIVILEGES ON " + database + ".* TO ?@?;");
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, "%");
-            System.out.println(preparedStatement);
-            preparedStatement.execute();
+            Statement statement = this.connection.createStatement();
+            statement.execute(String.format("GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%%';", database, username));
+            statement.close();
 
-            this.connection.createStatement().executeQuery("FLUSH PRIVILEGES;");
+            this.connection.createStatement().execute("FLUSH PRIVILEGES;");
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable t) {
