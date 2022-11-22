@@ -16,20 +16,20 @@ public class MySQLDatabaseInstance implements DatabaseInstance {
     public void createOrUpdate(String database, String username, String password) {
         try {
             if (!this.exists(username)) {
-                PreparedStatement preparedStatement = this.connection.prepareStatement("CREATE USER %s@%s IDENTIFIED BY %s");
+                PreparedStatement preparedStatement = this.connection.prepareStatement("CREATE USER ?@? IDENTIFIED BY ?");
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, "%");
                 preparedStatement.setString(3, password);
                 preparedStatement.execute();
             } else {
-                PreparedStatement preparedStatement = this.connection.prepareStatement("ALTER USER %s@%s IDENTIFIED BY %s");
+                PreparedStatement preparedStatement = this.connection.prepareStatement("ALTER USER ?@? IDENTIFIED BY ?");
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, "%");
                 preparedStatement.setString(3, password);
                 preparedStatement.execute();
             }
 
-            PreparedStatement preparedStatement = this.connection.prepareStatement("GRANT ALL PRIVILEGES ON %s.* TO %s@%s;");
+            PreparedStatement preparedStatement = this.connection.prepareStatement("GRANT ALL PRIVILEGES ON ?.* TO ?@?;");
             preparedStatement.setString(1, database);
             preparedStatement.setString(2, username);
             preparedStatement.setString(3, "%");
@@ -67,7 +67,7 @@ public class MySQLDatabaseInstance implements DatabaseInstance {
 
     private boolean exists(String username) {
         try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement("SELECT * FROM mysql.user WHERE user = %s AND host = %s");
+            PreparedStatement preparedStatement = this.connection.prepareStatement("SELECT * FROM mysql.user WHERE user = ? AND host = ?");
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, "%");
 
