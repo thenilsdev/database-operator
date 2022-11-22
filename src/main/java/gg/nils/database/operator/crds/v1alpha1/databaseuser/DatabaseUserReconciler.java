@@ -54,7 +54,7 @@ public class DatabaseUserReconciler implements Reconciler<DatabaseUser> {
         String password;
 
         // mongodb-iwcrates-credentials
-        String secretName = databaseInstanceName + "-" + resource.getMetadata().getName() + "-credentials";
+        String secretName = resource.getMetadata().getName() + "-credentials";
 
         Secret existingSecret = null;
 
