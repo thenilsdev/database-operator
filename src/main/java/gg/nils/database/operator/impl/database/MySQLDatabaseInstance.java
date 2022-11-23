@@ -15,6 +15,8 @@ public class MySQLDatabaseInstance implements DatabaseInstance {
     @Override
     public void createOrUpdate(String database, String username, String password) {
         try {
+            this.connection.createStatement().execute("CREATE DATABASE IF NOT EXISTS " + database + ";");
+
             if (!this.exists(username)) {
                 PreparedStatement preparedStatement = this.connection.prepareStatement("CREATE USER ?@? IDENTIFIED BY ?;");
                 preparedStatement.setString(1, username);
